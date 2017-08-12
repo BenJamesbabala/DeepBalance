@@ -52,7 +52,6 @@ RNNE <- function(formula,
   #   doParallel : Used for parallel processing
   #   RSNNS      : Used for training multilayer perceptronnetworks
   #   dplyr      : Used for data manipulation
-  
 
   ### Error Handling ###
 
@@ -122,13 +121,13 @@ RNNE <- function(formula,
     min.sample <- dplyr::sample_n(min, min.cases, replace = TRUE)
     # Put both into training set called `train.boot`
     train.boot <- rbind(maj.sample, min.sample)  # Combine the data
-  
+
     # Determine the random subset of vars
     preds <- all.vars(formula)[-1]  # Get predictors
     rand.preds <- sample(preds, mtry, replace = TRUE)
-    
+
     # Subset training data
-    train.y <- train.boot[,1]
+    train.y <- train.boot[, 1]
     train.x <- train.boot[, rand.preds]
   }
   return(TRUE)
