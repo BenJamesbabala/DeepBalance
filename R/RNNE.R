@@ -16,7 +16,7 @@
 #' 
 #' @import parallel
 #' @import doParallel
-#' @import nnet
+#' @import RSNNS
 #' @import dplyr
 #' 
 #' @examples
@@ -46,6 +46,13 @@ RNNE <- function(formula,
   #
   # Notes:
   #   Code cleaned using lintr
+  #
+  # Imports:
+  #   parallel   : Used for parallel processing
+  #   doParallel : Used for parallel processing
+  #   RSNNS      : Used for training multilayer perceptronnetworks
+  #   dplyr      : Used for data manipulation
+  
 
   ### Error Handling ###
 
@@ -75,6 +82,9 @@ RNNE <- function(formula,
   cl <- parallel::makeCluster(n.cores)  # Start parallel
   doParallel::registerDoParallel(cl)  # Register parallel cluster
 
+  if (verbose) {
+    print("PASSED ERROR HANDLING ...")
+  }
   ### End Error Handling ###
 
   # Get the data into a workable frame
@@ -92,8 +102,34 @@ RNNE <- function(formula,
   # Get majority and minority separated df's
   maj <- dplyr::filter(model.data, model.data[, 1] == majority)
   min <- dplyr::filter(model.data, model.data[, 1] != majority)
+  min.cases <- nrow(min)  # Get number of minority cases
+
+  if (verbose) {
+    print("MINORITY/MAJORITY CLASSES ESTABLISHED ...")
+  }
 
   # Create an empty model list to hold our ensemble
   model.list <- vector(mode = "list", length = total.nets)
+
+  if (verbose) {
+    print("STARTING MODEL CREATION ...")
+  }
+
+  model.list <- foreach(n = 1:total.nets) %dopar% {
+    # Start balanced resampling
+    # Grab all of minority and equal number of majority
+    maj.sample <- dplyr::sample_n(maj, min.cases, replace = TRUE)
+    min.sample <- dplyr::sample_n(min, min.cases, replace = TRUE)
+    # Put both into training set called `train.boot`
+    train.boot <- rbind(maj.sample, min.sample)  # Combine the data
+  
+    # Determine the random subset of vars
+    preds <- all.vars(formula)[-1]  # Get predictors
+    rand.preds <- sample(preds, mtry, replace = TRUE)
+    
+    # Subset training data
+    train.y <- train.boot[,1]
+    train.x <- train.boot[, rand.preds]
+  }
   return(TRUE)
 }
