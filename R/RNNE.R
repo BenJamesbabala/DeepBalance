@@ -96,7 +96,7 @@ RNNE <- function(formula,
   model.data <- model.frame(formula, train)
 
   # Start to find the minority class
-  tab <- table(model.data[, 1] / nrow(model.data))
+  tab <- table(model.data[, 1]) / nrow(model.data)
 
   # Determine what the majority is
   majority <- names(tab[2])
@@ -130,11 +130,11 @@ RNNE <- function(formula,
 
     # Determine the random subset of vars
     preds <- all.vars(formula)[-1]  # Get predictors
-    rand.preds <- sample(preds, mtry, replace = TRUE)
+    rand.preds <- unique(sample(preds, mtry, replace = TRUE))
 
     # Subset training data
-    train.y <- train.boot[, 1]
-    train.x <- train.boot[, rand.preds]
+    train.y <- as.matrix(train.boot[, 1])
+    train.x <- as.matrix(train.boot[, rand.preds])
 
     # Train multilayer perceptron
     mlpnn <- RSNNS::mlp(train.x,
