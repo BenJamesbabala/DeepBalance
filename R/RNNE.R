@@ -145,5 +145,7 @@ RNNE <- function(formula,
     mlpnn
   }
 
-  return(TRUE)
+  parallel::stopCluster(cl)  # Stop parallel ops
+
+  return(model.list)  # Return ensemble of models
 }
