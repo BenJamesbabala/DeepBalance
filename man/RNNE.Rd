@@ -21,7 +21,8 @@ RNNE(formula, train, mtry = 1, total.nets = 1, verbose = FALSE,
 \item{n.cores}{Number of cores to use}
 }
 \description{
-This function trains an ensemble of random neural networks using balanced bootstrapped data
+This function trains an ensemble of random neural networks 
+    using balanced bootstrapped data
 }
 \examples{
 RNNE(formula, train, mtry = 3, total.nets = 10, verbose = TRUE, n.cores = 1)
