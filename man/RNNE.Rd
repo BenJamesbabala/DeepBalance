@@ -4,8 +4,8 @@
 \alias{RNNE}
 \title{Ensemble of Random Neural Networks}
 \usage{
-RNNE(formula, train, mtry = 1, total.nets = 1, verbose = FALSE,
-  n.cores = 1)
+RNNE(formula, train, mtry = 1, total.nets = 1, hidden.layers = 3,
+  max.it = 50, verbose = FALSE, n.cores = 1)
 }
 \arguments{
 \item{formula}{Formula for containing outcome and all of the predictors of interest}
@@ -15,6 +15,10 @@ RNNE(formula, train, mtry = 1, total.nets = 1, verbose = FALSE,
 \item{mtry}{Number of predictors to randomly try}
 
 \item{total.nets}{Number of total networks to train}
+
+\item{hidden.layers}{Number of hidden layers}
+
+\item{max.it}{Number of iterations for training a network}
 
 \item{verbose}{Whether or not to be verbose}
 

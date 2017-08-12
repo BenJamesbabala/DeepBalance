@@ -7,6 +7,8 @@
 #' @param train Training dataset
 #' @param mtry Number of predictors to randomly try
 #' @param total.nets Number of total networks to train
+#' @param hidden.layers Number of hidden layers
+#' @param max.it Number of iterations for training a network
 #' @param verbose Whether or not to be verbose
 #' @param n.cores Number of cores to use
 #' 
@@ -26,6 +28,8 @@ RNNE <- function(formula,
                  train,
                  mtry = 1,
                  total.nets = 1,
+                 hidden.layers = 3,
+                 max.it = 50,
                  verbose = FALSE,
                  n.cores = 1) {
 
@@ -33,13 +37,15 @@ RNNE <- function(formula,
   #    using balanced bootstrapped data
   #
   # Args:
-  #   formula    : Formula used for model, e.g. y~x1+x2+x3
-  #   train      : Training data set
-  #   mtry       : Number of randomly selected variables to try for
-  #                   each individual neural network
-  #   total.nets : Total number of neural networks to use
-  #   verbose    : Whether or not to be verbose with output
-  #   n.cores    : Number of cores to use (if parallel)
+  #   formula       : Formula used for model, e.g. y~x1+x2+x3
+  #   train         : Training data set
+  #   mtry          : Number of randomly selected variables to try for
+  #                      each individual neural network
+  #   total.nets    : Total number of neural networks to use
+  #   hidden.layers : Number of hidden layers
+  #   max.it        : Max iterations for training MLP NN
+  #   verbose       : Whether or not to be verbose with output
+  #   n.cores       : Number of cores to use (if parallel)
   #
   # Returns:
   #   Returns list of trained neural networks
@@ -129,6 +135,15 @@ RNNE <- function(formula,
     # Subset training data
     train.y <- train.boot[, 1]
     train.x <- train.boot[, rand.preds]
+
+    # Train multilayer perceptron
+    mlpnn <- RSNNS::mlp(train.x,
+                        train.y,
+                        size = hidden.layers,
+                        maxit = max.it)
+
+    mlpnn
   }
+
   return(TRUE)
 }
