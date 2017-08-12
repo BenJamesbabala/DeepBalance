@@ -15,6 +15,7 @@
 #' @export
 #' 
 #' @import parallel
+#' @import doParallel
 #' @import nnet
 #' @import dplyr
 #' 
@@ -46,19 +47,23 @@ RNNE <- function(formula,
   # Notes:
   #   Code cleaned using lintr
 
-  # Error Handling
+  ### Error Handling ###
+
   # See that train is a data frame
   if (class(train) != "data.frame") {
     stop("Training data must be a of class `data.frame`!")
   }
+
   # See that mtry is >= 1
   if (mtry < 1) {
     stop("Parameters mtry is invalid!")
   }
+
   # See that total.nets is >= 1
   if (total.nets < 1) {
     stop("Parameters total.nets is invalid!")
   }
+
   # See that cores is acceptable
   avail.cores <- parallel::detectCores() - 1  # Find available cores
   if (n.cores > avail.cores) {
@@ -67,6 +72,10 @@ RNNE <- function(formula,
   if (n.cores < 1) {
     stop("Cores can't be negative!")
   }
+  cl <- parallel::makeCluster(n.cores)  # Start parallel
+  doParallel::registerDoParallel(cl)  # Register parallel cluster
+
+  ### End Error Handling ###
 
   # Get the data into a workable frame
   model.data <- model.frame(formula, train)
@@ -84,5 +93,7 @@ RNNE <- function(formula,
   maj <- dplyr::filter(model.data, model.data[, 1] == majority)
   min <- dplyr::filter(model.data, model.data[, 1] != majority)
 
+  # Create an empty model list to hold our ensemble
+  model.list <- vector(mode = "list", length = total.nets)
   return(TRUE)
 }
