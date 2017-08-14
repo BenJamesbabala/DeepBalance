@@ -12,17 +12,19 @@
 #' @param verbose Whether or not to be verbose
 #' @param n.cores Number of cores to use
 #' 
+#' @return A list with each element as a neural network
+#' 
 #' @keywords neural network, random ensemble, random neural network, balanced bootstrap
 #' 
 #' @export
 #' 
 #' @import parallel
 #' @import doParallel
-#' @import RSNNS
+#' @import caret
 #' @import dplyr
 #' 
 #' @examples
-#' RNNE(formula, train, mtry = 3, total.nets = 10, verbose = TRUE, n.cores = 1)
+#' RNNE(formula, train, mtry = 3, total.nets = 10, hidden.layers = 3, max.it = 50, verbose = TRUE, n.cores = 1)
 
 RNNE <- function(formula,
                  train,
@@ -56,7 +58,7 @@ RNNE <- function(formula,
   # Imports:
   #   parallel   : Used for parallel processing
   #   doParallel : Used for parallel processing
-  #   RSNNS      : Used for training multilayer perceptronnetworks
+  #   caret      : Used for training multilayer perceptronnetworks
   #   dplyr      : Used for data manipulation
 
   ### Error Handling ###
@@ -90,6 +92,7 @@ RNNE <- function(formula,
   if (verbose) {
     print("PASSED ERROR HANDLING ...")
   }
+
   ### End Error Handling ###
 
   # Get the data into a workable frame

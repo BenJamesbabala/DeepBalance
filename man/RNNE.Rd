@@ -24,12 +24,15 @@ RNNE(formula, train, mtry = 1, total.nets = 1, hidden.layers = 3,
 
 \item{n.cores}{Number of cores to use}
 }
+\value{
+A list with each element as a neural network
+}
 \description{
 This function trains an ensemble of random neural networks 
     using balanced bootstrapped data
 }
 \examples{
-RNNE(formula, train, mtry = 3, total.nets = 10, verbose = TRUE, n.cores = 1)
+RNNE(formula, train, mtry = 3, total.nets = 10, hidden.layers = 3, max.it = 50, verbose = TRUE, n.cores = 1)
 }
 \author{
 Peter Xenopoulos
