@@ -136,7 +136,8 @@ RNNE <- function(formula,
     rand.preds <- unique(sample(preds, mtry, replace = TRUE))
 
     # Subset training data
-    train.y <- as.matrix(train.boot[, 1])
+    train.y <- train.boot[, 1]  # Grab the predicted clases
+    train.y <- ifelse(train.y == 0, 0, 1)  # Change into numeric
     train.x <- as.matrix(train.boot[, rand.preds])
 
     # Train multilayer perceptron
