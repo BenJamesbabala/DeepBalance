@@ -137,10 +137,14 @@ RNNE <- function(formula,
     train.boot <- rbind(maj.sample, min.sample)  # Combine the data
 
     # Determine the random subset of vars
-    new.formula <- reformulate(unique(sample(preds, mtry, replace = TRUE)), response = resp)
+    new.formula <- reformulate(unique(sample(preds, mtry, replace = TRUE)),
+                               response = resp)
 
     # Train multilayer perceptron
-    mlpnn <- nnet::nnet(new.formula, train.boot, size = hidden.layers, maxit = max.it)
+    mlpnn <- nnet::nnet(new.formula,
+                        train.boot,
+                        size = hidden.layers,
+                        maxit = max.it)
 
     mlpnn
   }
