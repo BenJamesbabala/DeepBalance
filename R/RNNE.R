@@ -22,6 +22,7 @@
 #' @import doParallel
 #' @import caret
 #' @import dplyr
+#' @import nnet
 #' 
 #' @examples
 #' RNNE(formula, train, mtry = 3, total.nets = 10, hidden.layers = 3, max.it = 50, verbose = TRUE, n.cores = 1)
@@ -98,6 +99,10 @@ RNNE <- function(formula,
   # Get the data into a workable frame
   model.data <- model.frame(formula, train)
 
+  # Get the variable names
+  resp <- all.vars(formula)[1]  # Outcome
+  preds <- all.vars(formula)[-1]  # Predictors
+
   # Start to find the minority class
   tab <- table(model.data[, 1]) / nrow(model.data)
 
@@ -132,19 +137,10 @@ RNNE <- function(formula,
     train.boot <- rbind(maj.sample, min.sample)  # Combine the data
 
     # Determine the random subset of vars
-    preds <- all.vars(formula)[-1]  # Get predictors
-    rand.preds <- unique(sample(preds, mtry, replace = TRUE))
-
-    # Subset training data
-    train.y <- train.boot[, 1]  # Grab the predicted clases
-    train.y <- ifelse(train.y == 0, 0, 1)  # Change into numeric
-    train.x <- as.matrix(train.boot[, rand.preds])
+    new.formula <- reformulate(unique(sample(preds, mtry, replace = TRUE)), response = resp)
 
     # Train multilayer perceptron
-    mlpnn <- RSNNS::mlp(train.x,
-                        train.y,
-                        size = hidden.layers,
-                        maxit = max.it)
+    mlpnn <- nnet::nnet(new.formula, train.boot, size = hidden.layers, maxit = max.it)
 
     mlpnn
   }
