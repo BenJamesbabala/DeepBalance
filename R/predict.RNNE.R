@@ -42,12 +42,12 @@ predict.RNNE <- function(models,
   ### Error Handling ###
 
   # Check to see that there is a list of nnet objects
-  if (class(newmodels[[1]]) != "nnet.formula") {
+  if (class(models[[1]]) != "nnet.formula") {
     stop("Must be nnet outcomes from RNNE()!")
   }
 
   # Check to see that we indeed have a list
-  if (length(newmodels) < 1 | type(newmodels) != "list") {
+  if (length(models) < 1 | class(models) != "list") {
     stop("Need a full LIST of models!")
   }
 
