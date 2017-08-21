@@ -20,7 +20,7 @@
 
 predict.RNNE <- function(models,
                          newdata,
-                         type = "Class") {
+                         type = "class") {
 
   # Predicts the outcomes from an ensemble of neural networks
   #
@@ -42,7 +42,7 @@ predict.RNNE <- function(models,
   ### Error Handling ###
 
   # Check to see that there is a list of nnet objects
-  if (class(models[[1]]) != "nnet.formula") {
+  if (class(models[[1]])[1] != "nnet.formula") {
     stop("Must be nnet outcomes from RNNE()!")
   }
 
