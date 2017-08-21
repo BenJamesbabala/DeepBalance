@@ -52,7 +52,7 @@ predict.RNNE <- function(models,
   }
 
   # Check to see that we have either `prob` or `class`
-  if (!is.element(type, c("class", "prob"))) {
+  if (!is.element(type, c("class", "raw"))) {
     stop("type needs to be either `class` or `prob`")
   }
 
