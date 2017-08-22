@@ -7,7 +7,7 @@
 #' @param train Training dataset
 #' @param mtry Number of predictors to randomly try
 #' @param total.nets Number of total networks to train
-#' @param hidden.layers Number of hidden layers
+#' @param hidden.units Number of hidden units
 #' @param max.it Number of iterations for training a network
 #' @param verbose Whether or not to be verbose
 #' @param n.cores Number of cores to use
@@ -25,13 +25,13 @@
 #' @import nnet
 #' 
 #' @examples
-#' RNNE(formula, train, mtry = 3, total.nets = 10, hidden.layers = 3, max.it = 50, verbose = TRUE, n.cores = 1)
+#' RNNE(formula, train, mtry = 3, total.nets = 10, hidden.units = 3, max.it = 50, verbose = TRUE, n.cores = 1)
 
 RNNE <- function(formula,
                  train,
                  mtry = 1,
                  total.nets = 1,
-                 hidden.layers = 3,
+                 hidden.units = 3,
                  max.it = 50,
                  verbose = FALSE,
                  n.cores = 1) {
@@ -45,7 +45,7 @@ RNNE <- function(formula,
   #   mtry          : Number of randomly selected variables to try for
   #                      each individual neural network
   #   total.nets    : Total number of neural networks to use
-  #   hidden.layers : Number of hidden layers
+  #   hidden.units  : Number of hidden layers
   #   max.it        : Max iterations for training MLP NN
   #   verbose       : Whether or not to be verbose with output
   #   n.cores       : Number of cores to use (if parallel)
@@ -143,7 +143,7 @@ RNNE <- function(formula,
     # Train multilayer perceptron
     mlpnn <- nnet::nnet(new.formula,
                         train.boot,
-                        size = hidden.layers,
+                        size = hidden.units,
                         maxit = max.it)
 
     mlpnn
