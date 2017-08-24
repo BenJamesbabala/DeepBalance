@@ -39,12 +39,13 @@ predict.RNNE <- function(models,
   #
   # Imports:
   #   dplyr      : Used for data manipulation
+  #   RSNNS      : Used for prediction
 
   ### Error Handling ###
 
   # Check to see that there is a list of nnet objects
-  if (class(models[[1]])[1] != "nnet.formula") {
-    stop("Must be nnet outcomes from RNNE()!")
+  if (class(models[[1]])[1] != "mlp") {
+    stop("Must be mlp outcomes from RNNE()!")
   }
 
   # Check to see that we indeed have a list
@@ -54,7 +55,7 @@ predict.RNNE <- function(models,
 
   # Check to see that we have either `prob` or `class`
   if (!is.element(type, c("class", "raw"))) {
-    stop("type needs to be either `class` or `prob`")
+    stop("type needs to be either `class` or `raw`")
   }
 
   ### End Error Handling ###
@@ -73,10 +74,10 @@ predict.RNNE <- function(models,
 
   # Return prediction results
   if (type == "class") {
-    # Add up number of votes from all the models
-    # If num.votes >= half the num. of models
-    # Total vote is 1, else 0
-    rs <- ifelse(rs >= length(models) / 2, 1, 0)
+    # Average out probabilities
+    # If > 0.5, label as 1
+    rs <- rs / length(models)
+    rs <- ifelse(rs > 0.5, 1, 0)
     return(rs)
   } else {
     # Average out probabilities if returning prob
