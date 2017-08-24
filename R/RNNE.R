@@ -141,6 +141,10 @@ RNNE <- function(formula,
                                response = resp)
     new.preds <- attr(terms(new.formula), "term.labels")
 
+    # We will code the majority class as "0"
+    # and the minority as "1"
+    train.boot[, 1] = ifelse(train.boot[, 1] == majority, 0, 1)
+
     # Train multilayer perceptron
     mlpnn <- RSNNS::mlp(train.boot[, 1],
                         train.boot[, new.preds],

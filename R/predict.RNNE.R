@@ -14,6 +14,7 @@
 #' @export
 #' 
 #' @import dplyr
+#' @import RSNNS
 #' 
 #' @examples
 #' predict.rnne(models, newdata, type = "Class")
