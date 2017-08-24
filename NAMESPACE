@@ -2,8 +2,7 @@
 
 S3method(predict,RNNE)
 export(RNNE)
-import(caret)
+import(RSNNS)
 import(doParallel)
 import(dplyr)
-import(nnet)
 import(parallel)

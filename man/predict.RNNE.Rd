@@ -4,7 +4,7 @@
 \alias{predict.RNNE}
 \title{Predict from an ensemble of random neural networks}
 \usage{
-\method{predict}{RNNE}(models, newdata, type = "Class")
+\method{predict}{RNNE}(models, newdata, type = "class")
 }
 \arguments{
 \item{models}{List of models}

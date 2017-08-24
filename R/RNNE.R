@@ -20,7 +20,6 @@
 #' 
 #' @import parallel
 #' @import doParallel
-#' @import caret
 #' @import dplyr
 #' @import RSNNS
 #' 
