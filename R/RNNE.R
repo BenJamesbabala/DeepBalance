@@ -22,7 +22,7 @@
 #' @import doParallel
 #' @import caret
 #' @import dplyr
-#' @import nnet
+#' @import RSNNS
 #' 
 #' @examples
 #' RNNE(formula, train, mtry = 3, total.nets = 10, hidden.units = 3, max.it = 50, verbose = TRUE, n.cores = 1)
@@ -34,7 +34,8 @@ RNNE <- function(formula,
                  hidden.units = 3,
                  max.it = 50,
                  verbose = FALSE,
-                 n.cores = 1) {
+                 n.cores = 1,
+                 ...) {
 
   # Trains an ensemble of random neural networks
   #    using balanced bootstrapped data
@@ -139,10 +140,11 @@ RNNE <- function(formula,
     # Determine the random subset of vars
     new.formula <- reformulate(unique(sample(preds, mtry, replace = TRUE)),
                                response = resp)
+    new.preds <- attr(terms(new.formula), "term.labels")
 
     # Train multilayer perceptron
-    mlpnn <- nnet::nnet(new.formula,
-                        train.boot,
+    mlpnn <- RSNNS::mlp(train.boot[, 1],
+                        train.boot[, new.preds],
                         size = hidden.units,
                         maxit = max.it)
 
