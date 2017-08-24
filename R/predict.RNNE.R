@@ -64,7 +64,7 @@ predict.RNNE <- function(models,
   # Loop through the models (columns of predictions)
   for (c in 1:ncol(predictions)) {
     # The c-th column are the predictions from the c-th model
-    predictions[, c] <- predict(models[[c]], newdata, type = "raw")
+    predictions[, c] <- predict(models[[c]], newdata, type = "raw")[, 1]
   }
 
   # Sum the row probabilities
