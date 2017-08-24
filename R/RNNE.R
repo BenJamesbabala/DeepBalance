@@ -138,7 +138,7 @@ RNNE <- function(formula,
                                response = resp)
 
     # Train multilayer perceptron
-    mlpnn <- darch(new.formula,
+    mlpnn <- darch::darch(new.formula,
                    train.boot,
                    darch.fineTuneFunction = "backpropagation",
                    darch.numEpochs = max.it,
