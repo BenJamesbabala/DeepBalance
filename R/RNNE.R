@@ -125,7 +125,7 @@ RNNE <- function(formula,
     print("STARTING MODEL CREATION ...")
   }
 
-  model.list <- foreach(n = 1:total.nets) %dopar% {
+  model.list <- foreach(n = 1:total.nets) %do% {
     # Start balanced resampling
     # Grab all of minority and equal number of majority
     maj.sample <- dplyr::sample_n(maj, min.cases, replace = TRUE)

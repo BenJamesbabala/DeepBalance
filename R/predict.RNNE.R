@@ -14,7 +14,6 @@
 #' @export
 #' 
 #' @import dplyr
-#' @import darch
 #' 
 #' @examples
 #' predict.rnne(models, newdata, type = "Class")
@@ -39,7 +38,6 @@ predict.RNNE <- function(models,
   #
   # Imports:
   #   dplyr      : Used for data manipulation
-  #   darch      : Used for prediction
 
   ### Error Handling ###
 
@@ -66,25 +64,20 @@ predict.RNNE <- function(models,
   # Loop through the models (columns of predictions)
   for (c in 1:ncol(predictions)) {
     # The c-th column are the predictions from the c-th model
-    predictions[, c] <- as.numeric(predict(models[[c]], newdata, type = type))
+    predictions[, c] <- predict(models[[c]], newdata, type = "raw")
   }
 
-  if (type == "raw") {
-    rs <- rs[, 2]  # Get the second column
-  } else {
-  # Return the predictions
+  # Sum the row probabilities
   rs <- rowSums(predictions)
-  }
 
   # Return prediction results
   if (type == "class") {
-    # Add up number of votes from all the models
-    # If num.votes >= half the num. of models
-    # Total vote is 1, else 0
-    rs <- ifelse(rs >= length(models) / 2, 1, 0)
+    # If avg prob > 0.5, predict class 1, else 0
+    rs <- rs / length(models)
+    rs <- ifelse(rs > 0.5, 1, 0)
     return(rs)
   } else {
-    # Average out probabilities if returning prob
+    # Just average out probabilities if returning prob
     rs <- rs / length(models)
     return(rs)
   }
