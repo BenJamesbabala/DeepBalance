@@ -11,7 +11,7 @@
 
 \item{newdata}{New data to predict outcomes}
 
-\item{type}{Can be 'class' to predict class or 'prob' to predict probability}
+\item{type}{Can be 'class' to predict class or 'raw' to predict probability}
 }
 \value{
 A vector with the predictions

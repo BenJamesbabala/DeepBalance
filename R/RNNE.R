@@ -7,7 +7,8 @@
 #' @param train Training dataset
 #' @param mtry Number of predictors to randomly try
 #' @param total.nets Number of total networks to train
-#' @param hidden.units Number of hidden units
+#' @param hidden.layers Number of hidden layers
+#' @param hidden.units Number of neurons in a hidden unit
 #' @param max.it Number of iterations for training a network
 #' @param verbose Whether or not to be verbose
 #' @param n.cores Number of cores to use
@@ -21,20 +22,18 @@
 #' @import parallel
 #' @import doParallel
 #' @import dplyr
-#' @import RSNNS
+#' @import darch
 #' 
 #' @examples
-#' RNNE(formula, train, mtry = 3, total.nets = 10, hidden.units = 3, max.it = 50, verbose = TRUE, n.cores = 1)
+#' RNNE(formula, train, mtry = 3, total.nets = 10, hidden.layers = 3, max.it = 50, verbose = TRUE, n.cores = 1)
 
 RNNE <- function(formula,
                  train,
                  mtry = 1,
                  total.nets = 1,
-                 hidden.units = 3,
                  max.it = 50,
                  verbose = FALSE,
-                 n.cores = 1,
-                 ...) {
+                 n.cores = 1) {
 
   # Trains an ensemble of random neural networks
   #    using balanced bootstrapped data
@@ -45,7 +44,6 @@ RNNE <- function(formula,
   #   mtry          : Number of randomly selected variables to try for
   #                      each individual neural network
   #   total.nets    : Total number of neural networks to use
-  #   hidden.units  : Number of hidden layers
   #   max.it        : Max iterations for training MLP NN
   #   verbose       : Whether or not to be verbose with output
   #   n.cores       : Number of cores to use (if parallel)
@@ -59,7 +57,6 @@ RNNE <- function(formula,
   # Imports:
   #   parallel   : Used for parallel processing
   #   doParallel : Used for parallel processing
-  #   caret      : Used for training multilayer perceptronnetworks
   #   dplyr      : Used for data manipulation
 
   ### Error Handling ###
@@ -139,18 +136,13 @@ RNNE <- function(formula,
     # Determine the random subset of vars
     new.formula <- reformulate(unique(sample(preds, mtry, replace = TRUE)),
                                response = resp)
-    new.preds <- attr(terms(new.formula), "term.labels")
-
-    # We will code the majority class as "0"
-    # and the minority as "1"
-    train.boot[, 1] = ifelse(train.boot[, 1] == majority, 0, 1)
 
     # Train multilayer perceptron
-    mlpnn <- RSNNS::mlp(train.boot[, 1],
-                        train.boot[, new.preds],
-                        size = hidden.units,
-                        maxit = max.it)
-
+    mlpnn <- darch(new.formula,
+                   train.boot,
+                   darch.fineTuneFunction = "backpropagation",
+                   darch.numEpochs = max.it,
+                   darch.returnBestModel = TRUE)
     mlpnn
   }
 

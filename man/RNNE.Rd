@@ -4,8 +4,8 @@
 \alias{RNNE}
 \title{Ensemble of Random Neural Networks}
 \usage{
-RNNE(formula, train, mtry = 1, total.nets = 1, hidden.units = 3,
-  max.it = 50, verbose = FALSE, n.cores = 1, ...)
+RNNE(formula, train, mtry = 1, total.nets = 1, max.it = 50,
+  verbose = FALSE, n.cores = 1)
 }
 \arguments{
 \item{formula}{Formula for containing outcome and all of the predictors of interest}
@@ -16,13 +16,15 @@ RNNE(formula, train, mtry = 1, total.nets = 1, hidden.units = 3,
 
 \item{total.nets}{Number of total networks to train}
 
-\item{hidden.units}{Number of hidden units}
-
 \item{max.it}{Number of iterations for training a network}
 
 \item{verbose}{Whether or not to be verbose}
 
 \item{n.cores}{Number of cores to use}
+
+\item{hidden.layers}{Number of hidden layers}
+
+\item{hidden.units}{Number of neurons in a hidden unit}
 }
 \value{
 A list with each element as a neural network
@@ -32,7 +34,7 @@ This function trains an ensemble of random neural networks
     using balanced bootstrapped data
 }
 \examples{
-RNNE(formula, train, mtry = 3, total.nets = 10, hidden.units = 3, max.it = 50, verbose = TRUE, n.cores = 1)
+RNNE(formula, train, mtry = 3, total.nets = 10, hidden.layers = 3, max.it = 50, verbose = TRUE, n.cores = 1)
 }
 \author{
 Peter Xenopoulos

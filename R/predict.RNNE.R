@@ -5,7 +5,7 @@
 #' 
 #' @param models List of models
 #' @param newdata New data to predict outcomes 
-#' @param type Can be 'class' to predict class or 'prob' to predict probability
+#' @param type Can be 'class' to predict class or 'raw' to predict probability
 #' 
 #' @return A vector with the predictions
 #' 
@@ -14,7 +14,7 @@
 #' @export
 #' 
 #' @import dplyr
-#' @import RSNNS
+#' @import darch
 #' 
 #' @examples
 #' predict.rnne(models, newdata, type = "Class")
@@ -29,7 +29,7 @@ predict.RNNE <- function(models,
   #   models  : A list of models from the RNNE function
   #   newdata : New data to predict outcomes for
   #   type    : Can either be 'class' to predict factor outcomes
-  #               or 'prob' for probabilities
+  #               or 'raw' for probabilities
   #
   # Returns:
   #   Returns vector of predictions
@@ -39,13 +39,13 @@ predict.RNNE <- function(models,
   #
   # Imports:
   #   dplyr      : Used for data manipulation
-  #   RSNNS      : Used for prediction
+  #   darch      : Used for prediction
 
   ### Error Handling ###
 
   # Check to see that there is a list of nnet objects
-  if (class(models[[1]])[1] != "mlp") {
-    stop("Must be mlp outcomes from RNNE()!")
+  if (class(models[[1]])[1] != "DArch") {
+    stop("Must be nnet outcomes from RNNE()!")
   }
 
   # Check to see that we indeed have a list
@@ -53,7 +53,7 @@ predict.RNNE <- function(models,
     stop("Need a full LIST of models!")
   }
 
-  # Check to see that we have either `prob` or `class`
+  # Check to see that we have either `raw` or `class`
   if (!is.element(type, c("class", "raw"))) {
     stop("type needs to be either `class` or `raw`")
   }
@@ -69,15 +69,19 @@ predict.RNNE <- function(models,
     predictions[, c] <- as.numeric(predict(models[[c]], newdata, type = type))
   }
 
+  if (type == "raw") {
+    rs <- rs[, 2]  # Get the second column
+  } else {
   # Return the predictions
   rs <- rowSums(predictions)
+  }
 
   # Return prediction results
   if (type == "class") {
-    # Average out probabilities
-    # If > 0.5, label as 1
-    rs <- rs / length(models)
-    rs <- ifelse(rs > 0.5, 1, 0)
+    # Add up number of votes from all the models
+    # If num.votes >= half the num. of models
+    # Total vote is 1, else 0
+    rs <- ifelse(rs >= length(models) / 2, 1, 0)
     return(rs)
   } else {
     # Average out probabilities if returning prob
