@@ -58,6 +58,7 @@ RNNE <- function(formula,
   #   parallel   : Used for parallel processing
   #   doParallel : Used for parallel processing
   #   dplyr      : Used for data manipulation
+  #   darch      : Used for deep architectures
 
   ### Error Handling ###
 
