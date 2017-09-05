@@ -138,13 +138,13 @@ RNNE <- function(formula,
     new.formula <- reformulate(unique(sample(preds, mtry, replace = TRUE)),
                                response = resp)
 
-    # Train multilayer perceptron
-    mlpnn <- darch::darch(new.formula,
+    # Train deep belief networks
+    dbn <- darch::darch(new.formula,
                    train.boot,
                    darch.fineTuneFunction = "backpropagation",
                    darch.numEpochs = max.it,
                    darch.returnBestModel = TRUE)
-    mlpnn
+    dbn
   }
 
   parallel::stopCluster(cl)  # Stop parallel ops
