@@ -6,9 +6,8 @@
 #' @param formula Formula for containing outcome and all of the predictors of interest
 #' @param train Training dataset
 #' @param mtry Number of predictors to randomly try
+#' @param all.vars Boolean value to indicate whether or not to take all variables
 #' @param total.nets Number of total networks to train
-#' @param hidden.layers Number of hidden layers
-#' @param hidden.units Number of neurons in a hidden unit
 #' @param max.it Number of iterations for training a network
 #' @param verbose Whether or not to be verbose
 #' @param n.cores Number of cores to use
@@ -25,11 +24,12 @@
 #' @import darch
 #' 
 #' @examples
-#' RNNE(formula, train, mtry = 3, total.nets = 10, hidden.layers = 3, max.it = 50, verbose = TRUE, n.cores = 1)
+#' RNNE(formula, train, mtry = 3, all.vars = F, total.nets = 10, max.it = 50, verbose = TRUE, n.cores = 1)
 
 RNNE <- function(formula,
                  train,
                  mtry = 1,
+                 all.vars = FALSE,
                  total.nets = 1,
                  max.it = 50,
                  verbose = FALSE,
@@ -43,6 +43,7 @@ RNNE <- function(formula,
   #   train         : Training data set
   #   mtry          : Number of randomly selected variables to try for
   #                      each individual neural network
+  #   all.vars      : Boolean to include all features
   #   total.nets    : Total number of neural networks to use
   #   max.it        : Max iterations for training MLP NN
   #   verbose       : Whether or not to be verbose with output
@@ -131,12 +132,17 @@ RNNE <- function(formula,
     # Grab all of minority and equal number of majority
     maj.sample <- dplyr::sample_n(maj, min.cases, replace = TRUE)
     min.sample <- dplyr::sample_n(min, min.cases, replace = TRUE)
+
     # Put both into training set called `train.boot`
     train.boot <- rbind(maj.sample, min.sample)  # Combine the data
 
     # Determine the random subset of vars
-    new.formula <- reformulate(unique(sample(preds, mtry, replace = TRUE)),
-                               response = resp)
+    sampled.vars <- unique(sample(preds, mtry, replace = TRUE))
+    new.formula <- reformulate(sampled.vars, response = resp)
+    # If all.vars is TRUE, then take all of the variables
+    if (all.vars == TRUE) {
+      new.formula <- reformulate(preds, response = resp)
+    }
 
     # Train deep belief networks
     dbn <- darch::darch(new.formula,
